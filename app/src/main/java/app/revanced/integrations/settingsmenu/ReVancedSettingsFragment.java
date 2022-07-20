@@ -26,6 +26,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.videoplayer.AutoRepeat;
 import app.revanced.integrations.videoplayer.Copy;
 import app.revanced.integrations.videoplayer.CopyWithTimeStamp;
+import app.revanced.integrations.videoplayer.DownloadButton;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
 
@@ -152,6 +153,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             CopyWithTimeStamp.refreshShouldBeShown();
         } else if ("pref_copy_video_url_button_list".equals(str)) {
             Copy.refreshShouldBeShown();
+        } else if ("pref_download_button_list".equals(str)) {
+            DownloadButton.refreshShouldBeShown();
         }
     };
 
