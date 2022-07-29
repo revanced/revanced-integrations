@@ -1,6 +1,7 @@
 package app.revanced.integrations.settings;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public enum SettingsEnum {
+    //Download Settings
+    DOWNLOAD_PATH("revanced_download_path", Environment.getExternalStorageDirectory().getPath() + "/Download", ReturnType.STRING),
 
     //Codec Override
     CODEC_OVERRIDE("revanced_override_codec_enabled", true, ReturnType.BOOLEAN),
@@ -83,7 +86,7 @@ public enum SettingsEnum {
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER("revanced_pref_buffer_for_playback_after_rebuffer_ms", 5000, ReturnType.INTEGER),
 
     //ReVanced General Settings
-    DEBUG("revanced_debug_enabled", false, ReturnType.BOOLEAN),
+    DEBUG("revanced_debug_enabled", true, ReturnType.BOOLEAN),
     USE_DARK_THEME("app_theme_dark", false, ReturnType.BOOLEAN),
 
     //RYD Settings

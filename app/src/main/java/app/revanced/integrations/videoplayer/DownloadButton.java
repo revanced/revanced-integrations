@@ -1,5 +1,6 @@
 package app.revanced.integrations.videoplayer;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
@@ -7,39 +8,47 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
+
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.sponsorblock.player.VideoHelpers;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
-import java.lang.ref.WeakReference;
-
 /* loaded from: classes6.dex */
 //ToDo: Refactor
-public class Copy {
+public class DownloadButton {
     static WeakReference<ImageView> _button = new WeakReference<>(null);
     static ConstraintLayout _constraintLayout;
     static int fadeDurationFast;
     static int fadeDurationScheduled;
     static Animation fadeIn;
     static Animation fadeOut;
-    public static boolean isCopyButtonEnabled;
+    public static boolean isDownloadButtonEnabled;
     static boolean isShowing;
 
-    public static void initializeCopyButton(Object obj) {
+    public static void initializeDownloadButton(Object obj) {
         try {
-            LogHelper.debug(Copy.class, "initializing");
+            LogHelper.debug(DownloadButton.class, "initializing");
             _constraintLayout = (ConstraintLayout) obj;
-            isCopyButtonEnabled = shouldBeShown();
-            ImageView imageView = _constraintLayout.findViewById(getIdentifier("copy_button", "id"));
+            isDownloadButtonEnabled = shouldBeShown();
+            ImageView imageView = _constraintLayout.findViewById(getIdentifier("download_button", "id"));
             if (imageView == null) {
-                LogHelper.debug(Copy.class, "Couldn't find imageView with id \"copy_button\"");
+                LogHelper.debug(DownloadButton.class, "Couldn't find imageView with id \"download_button\"");
                 return;
             }
 
             imageView.setOnClickListener(view -> {
-                LogHelper.debug(Copy.class, "Button clicked");
-                VideoHelpers.copyVideoUrlToClipboard();
+                LogHelper.debug(DownloadButton.class, "Download button clicked");
+
+                var options = Arrays.asList("Video", "Audio").toArray(new CharSequence[0]);
+
+                new AlertDialog.Builder(view.getContext())
+                        .setItems(options, (dialog, which) -> {
+                            LogHelper.debug(DownloadButton.class, String.valueOf(options[which]));
+                        })
+                        .show();
+                // TODO: show popup and download via newpipe
             });
             _button = new WeakReference<>(imageView);
             fadeDurationFast = getInteger("fade_duration_fast");
@@ -54,43 +63,43 @@ public class Copy {
             changeVisibility(false);
 
         } catch (Exception e) {
-            LogHelper.printException(Copy.class, "Unable to set FrameLayout", e);
+            LogHelper.printException(DownloadButton.class, "Unable to set FrameLayout", e);
         }
     }
 
     public static void changeVisibility(boolean z) {
-        if (isShowing != z) {
-            isShowing = z;
-            ImageView imageView = _button.get();
-            if (_constraintLayout != null && imageView != null) {
-                if (z && isCopyButtonEnabled) {
-                    LogHelper.debug(Copy.class, "Fading in");
-                    imageView.setVisibility(View.VISIBLE);
-                    imageView.startAnimation(fadeIn);
-                } else if (imageView.getVisibility() == View.VISIBLE) {
-                    LogHelper.debug(Copy.class, "Fading out");
-                    imageView.startAnimation(fadeOut);
-                    imageView.setVisibility(View.GONE);
-                }
+        if (isShowing == z) return;
+
+        isShowing = z;
+        ImageView imageView = _button.get();
+        if (_constraintLayout != null && imageView != null) {
+            if (z && isDownloadButtonEnabled) {
+                LogHelper.debug(DownloadButton.class, "Fading in");
+                imageView.setVisibility(View.VISIBLE);
+                imageView.startAnimation(fadeIn);
+            } else if (imageView.getVisibility() == View.VISIBLE) {
+                LogHelper.debug(DownloadButton.class, "Fading out");
+                imageView.startAnimation(fadeOut);
+                imageView.setVisibility(View.GONE);
             }
         }
     }
 
     public static void refreshShouldBeShown() {
-        isCopyButtonEnabled = shouldBeShown();
+        isDownloadButtonEnabled = shouldBeShown();
     }
 
     private static boolean shouldBeShown() {
         Context appContext = ReVancedUtils.getContext();
         if (appContext == null) {
-            LogHelper.printException(Copy.class, "shouldBeShown - context is null!");
+            LogHelper.printException(DownloadButton.class, "shouldBeShown - context is null!");
             return false;
         }
-        String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_copy_video_url_button_list", null);
+        String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_download_button_list", "PLAYER" /* TODO: set the default to null, as this will be set by the settings page later */);
         if (string == null || string.isEmpty()) {
             return false;
         }
-        return string.equalsIgnoreCase("PLAYER") || string.equalsIgnoreCase("BOTH");
+        return string.equalsIgnoreCase("PLAYER");
     }
 
     private static int getIdentifier(String str, String str2) {
