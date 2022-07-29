@@ -1,5 +1,6 @@
 package app.revanced.integrations.videoplayer;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -37,8 +39,15 @@ public class DownloadButton {
             }
 
             imageView.setOnClickListener(view -> {
-                LogHelper.debug(DownloadButton.class, "Button clicked");
+                LogHelper.debug(DownloadButton.class, "Download button clicked");
 
+                var options = Arrays.asList("Video", "Audio").toArray(new CharSequence[0]);
+
+                new AlertDialog.Builder(view.getContext())
+                        .setItems(options, (dialog, which) -> {
+                            LogHelper.debug(DownloadButton.class, String.valueOf(options[which]));
+                        })
+                        .show();
                 // TODO: show popup and download via newpipe
             });
             _button = new WeakReference<>(imageView);
@@ -86,7 +95,7 @@ public class DownloadButton {
             LogHelper.printException(DownloadButton.class, "shouldBeShown - context is null!");
             return false;
         }
-        String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_download_button_list","PLAYER" /* TODO: set the default to null, as this will be set by the settings page later */ );
+        String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_download_button_list", "PLAYER" /* TODO: set the default to null, as this will be set by the settings page later */);
         if (string == null || string.isEmpty()) {
             return false;
         }
