@@ -1,14 +1,11 @@
 package app.revanced.integrations.videoplayer;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import org.schabi.newpipe.extractor.NewPipe;
 
 import java.lang.ref.WeakReference;
 
@@ -62,19 +59,19 @@ public class DownloadButton {
     }
 
     public static void changeVisibility(boolean z) {
-        if (isShowing != z) {
-            isShowing = z;
-            ImageView imageView = _button.get();
-            if (_constraintLayout != null && imageView != null) {
-                if (z && isDownloadButtonEnabled) {
-                    LogHelper.debug(DownloadButton.class, "Fading in");
-                    imageView.setVisibility(View.VISIBLE);
-                    imageView.startAnimation(fadeIn);
-                } else if (imageView.getVisibility() == View.VISIBLE) {
-                    LogHelper.debug(DownloadButton.class, "Fading out");
-                    imageView.startAnimation(fadeOut);
-                    imageView.setVisibility(View.GONE);
-                }
+        if (isShowing == z) return;
+
+        isShowing = z;
+        ImageView imageView = _button.get();
+        if (_constraintLayout != null && imageView != null) {
+            if (z && isDownloadButtonEnabled) {
+                LogHelper.debug(DownloadButton.class, "Fading in");
+                imageView.setVisibility(View.VISIBLE);
+                imageView.startAnimation(fadeIn);
+            } else if (imageView.getVisibility() == View.VISIBLE) {
+                LogHelper.debug(DownloadButton.class, "Fading out");
+                imageView.startAnimation(fadeOut);
+                imageView.setVisibility(View.GONE);
             }
         }
     }
@@ -89,7 +86,7 @@ public class DownloadButton {
             LogHelper.printException(DownloadButton.class, "shouldBeShown - context is null!");
             return false;
         }
-        String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_download_button_list", null);
+        String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_download_button_list","PLAYER" /* TODO: set the default to null, as this will be set by the settings page later */ );
         if (string == null || string.isEmpty()) {
             return false;
         }
