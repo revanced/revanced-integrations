@@ -26,7 +26,7 @@ public class ReVancedSettingActivity {
     }
 
     public static void initializeSettings(LicenseActivity base) {
-        base.setContentView(getIdentifier("xsettings_with_toolbar", "layout"));
+        base.setContentView(getIdentifier("revanced_settings_with_toolbar", "layout"));
 
         PreferenceFragment preferenceFragment;
         String preferenceIdentifier;
@@ -43,7 +43,7 @@ public class ReVancedSettingActivity {
             preferenceFragment = new ReVancedSettingsFragment();
         }
         
-        base.getFragmentManager().beginTransaction().replace(getIdentifier("xsettings_fragments", "id"), preferenceFragment).commit();
+        base.getFragmentManager().beginTransaction().replace(getIdentifier("revanced_settings_fragments", "id"), preferenceFragment).commit();
     }
 
     public static <T extends View> T getView(Class<T> typeClass, ViewGroup viewGroup) {
