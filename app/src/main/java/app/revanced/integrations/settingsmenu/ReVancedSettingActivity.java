@@ -42,9 +42,16 @@ public class ReVancedSettingActivity {
             preferenceIdentifier = "revanced_settings";
             preferenceFragment = new ReVancedSettingsFragment();
         }
-        
+
+        try {
+            getTextView((ViewGroup) base.findViewById(getIdentifier("toolbar", "id"))).setText(preferenceIdentifier);
+        } catch (Exception e) {
+            LogHelper.printException(ReVancedSettingActivity.class, "Couldn't set Toolbar title", e);
+        }
+
         base.getFragmentManager().beginTransaction().replace(getIdentifier("revanced_settings_fragments", "id"), preferenceFragment).commit();
     }
+
 
     public static <T extends View> T getView(Class<T> typeClass, ViewGroup viewGroup) {
         if (viewGroup == null) {
